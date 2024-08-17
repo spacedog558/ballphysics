@@ -1,37 +1,57 @@
 import pygame
+import math
+
+# Initialize Pygame
 pygame.init()
 
+# Constants
 WIDTH = 800
 HEIGHT = 500
-win = pygame.display.set_mode([WIDTH, HEIGHT])
-pygame.display.set_caption("Moving sphere")
+FPS = 60
 
+# Set up the display
+win = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Sphere physics engine")
+
+# Clock for controlling the frame rate
 timer = pygame.time.Clock()
-fps = 60
+
+# Sphere properties
+spherex = 400
+sphere_radius = 25
+initial_velocity = 0
+gravity = 0.5
+bounce_reduction = 0.8  # Increased from 0.7 to 0.8 for more pronounced effect
+
+# Variables for bounce calculation
+velocity = initial_velocity
+spherey = HEIGHT / 2  # Start in the middle of the screen
+
+# Main loop
 run = True
-
-spherex = 200
-spherey = 300
-sphereyOrigin = spherey
-sphereVel = 7
-
-def sphere_draw():
-    pygame.draw.rect(win, 'grey', [spherex, spherey,50,50], 0, 50)
-
 while run:
-    timer.tick(fps)
-    win.fill('black')
+    timer.tick(FPS)
+    win.fill((0, 0, 0))  # Clear screen with black
     
-    sphere_draw()
-    if spherey < 450:
-        spherey += sphereVel
-    if spherey > 450:
-        while spherey > sphereyOrigin*3/4:
-            spherey -= sphereVel
-        sphereyOrigin = sphereyOrigin*3/4
+    # Draw the sphere
+    pygame.draw.circle(win, (128, 128, 128), (spherex, int(spherey)), sphere_radius)
     
+    # Update sphere position
+    spherey += velocity
+    velocity += gravity
+    
+    # Check for collision with bottom boundary
+    if spherey + sphere_radius >= HEIGHT:
+        spherey = HEIGHT - sphere_radius  # Correct position
+        velocity = -velocity * bounce_reduction  # Reverse and reduce velocity
+    
+    # Event handling
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
+    
+    # Update display
     pygame.display.flip()
+
+# Quit Pygame
 pygame.quit()
