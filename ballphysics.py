@@ -11,8 +11,9 @@ fps = 60
 run = True
 
 spherex = 200
-spherey = 200
-sphereVel = 5
+spherey = 300
+sphereyOrigin = spherey
+sphereVel = 7
 
 def sphere_draw():
     pygame.draw.rect(win, 'grey', [spherex, spherey,50,50], 0, 50)
@@ -22,10 +23,12 @@ while run:
     win.fill('black')
     
     sphere_draw()
-    if spherey >= 450:
-        spherey -= sphereVel
-    elif spherey < 0:
+    if spherey < 450:
         spherey += sphereVel
+    if spherey > 450:
+        while spherey > sphereyOrigin*3/4:
+            spherey -= sphereVel
+        sphereyOrigin = sphereyOrigin*3/4
     
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
